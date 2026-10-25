@@ -4,34 +4,34 @@
 
       <h2 class="text-center mb-4">Contactez-nous</h2>
 
-      <!-- Le formulaire lié au FormGroup du TypeScript -->
+
       <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
 
-        <!-- Prénom -->
+
         <div class="mb-3">
           <label class="form-label">Prénom</label>
           <input type="text" formControlName="prenom" class="form-control">
         </div>
 
-        <!-- Nom -->
+
         <div class="mb-3">
           <label class="form-label">Nom</label>
           <input type="text" formControlName="nom" class="form-control">
         </div>
 
-        <!-- Âge -->
+
         <div class="mb-3">
           <label class="form-label">Âge</label>
           <input type="number" formControlName="age" class="form-control">
         </div>
 
-        <!-- Checkbox Hide Email -->
+
         <div class="mb-3 form-check">
           <input type="checkbox" formControlName="hideEmail" (change)="onHideEmailChange()" class="form-check-input" id="hideEmailCheck">
           <label class="form-check-label" for="hideEmailCheck">Cacher l'email (Hide)</label>
         </div>
 
-        <!-- Email (s'affiche uniquement si la case "Hide" n'est PAS cochée) -->
+
         @if (!contactForm.get('hideEmail')?.value) {
           <div class="mb-3">
             <label class="form-label">Email</label>
@@ -39,13 +39,13 @@
           </div>
         }
 
-        <!-- Commentaire -->
+
         <div class="mb-3">
           <label class="form-label">Commentaire</label>
           <textarea formControlName="commentaire" class="form-control" rows="3"></textarea>
         </div>
 
-        <!-- Bouton Envoyer (désactivé si le formulaire n'est pas valide) -->
+
         <div class="text-center">
           <button type="submit" [disabled]="!contactForm.valid" class="btn btn-primary w-100">
             Envoyer

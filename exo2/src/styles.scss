@@ -1,1 +1,505 @@
-/* You can add global styles to this file, and also import other style files */
+// ============================================================================
+// app.scss : feuille de style UNIQUE, écrite pour TON html (Bootstrap 5.3)
+// Univers : maison de fleuriste sombre, bordeaux, romantique et théâtrale.
+// Sommaire : 1 Variables · 2 Surcharges Bootstrap · 3 Bootstrap · 4 Mixins
+//   5 Base · 6 Mise en page & fonds · 7 Composants partagés · 8 Header
+//   9 Footer · 10 Accueil · 11 Liste · 12 Gestion · 13 Contact · 14 Erreur 404
+// Aucun !important : les utilitaires Bootstrap (.bg-light, .text-dark, .border,
+// .shadow-sm…) sont repilotés par leurs variables CSS (--bs-*).
+// =========================================================================
+
+// ======================= 1. VARIABLES =======================
+$black-cherry:   #3A0E1E;  // fond principal
+$deep-wine:      #441015;  // fond secondaire (header, footer)
+$cranberry-silk: #8E2D3B;  // accent principal
+$dusty-mauve:    #A07A80;  // bordures (4,45:1 sur le fond : pas pour du petit texte)
+$blush-veil:     #E7C7CF;  // texte principal
+$porcelain-pink: #F5E9ED;  // texte très lisible, éléments clairs
+$sage:           #786F50;  // séparateurs
+$rose-clay:      #C39583;
+$antique-gold:   #967F59;
+
+$burgundy-dark:   #6B1D2A;
+$cranberry-hover: #A33A4B; // survol bouton (5,9:1 avec porcelain)
+$mauve-text:      #B3919A; // texte secondaire AA (≥ 5,6:1)
+$danger-wine:     #A8323F;
+$danger-text:     #F0A0A8;
+
+// Triplets RGB pour piloter les utilitaires Bootstrap (--bs-xxx-rgb)
+$blush-rgb:     231, 199, 207;
+$mauve-rgb:     179, 145, 154;
+$porcelain-rgb: 245, 233, 237;
+
+// Remplace par ta photo de fleurs :
+$bg-flowers:none;
+
+$font-title:  'Playfair Display', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+$font-body:   'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+$font-script: 'Parisienne', 'Great Vibes', 'Brush Script MT', 'Segoe Script', cursive; // la plus lisible des 3
+
+$transition: 0.3s ease;
+$radius-sm:  0.5rem;
+$radius-md:  0.875rem;
+$header-h:   4.5rem;
+
+:root {
+  --black-cherry: #{$black-cherry};   --deep-wine: #{$deep-wine};
+  --cranberry-silk: #{$cranberry-silk}; --dusty-mauve: #{$dusty-mauve};
+  --blush-veil: #{$blush-veil};       --porcelain-pink: #{$porcelain-pink};
+  --sage: #{$sage};                   --rose-clay: #{$rose-clay};
+  --antique-gold: #{$antique-gold};   --mauve-text: #{$mauve-text};
+  --font-title: #{$font-title};       --font-body: #{$font-body};
+  --font-script: #{$font-script};     --transition: #{$transition};
+}
+
+// ======================= 2. SURCHARGES BOOTSTRAP =======================
+@import 'bootstrap/scss/functions';
+
+$body-bg:              $black-cherry;
+$body-color:           $blush-veil;
+$body-secondary-color: $mauve-text;       // .text-muted
+$body-emphasis-color:  $porcelain-pink;
+
+$primary:   $cranberry-silk;
+$secondary: $dusty-mauve;
+$danger:    $danger-wine;
+$light:     $deep-wine;   // .bg-light (header, footer, cadre) devient bordeaux profond
+$dark:      $deep-wine;
+
+$font-family-sans-serif: $font-body;
+$font-weight-base:       300;
+$line-height-base:       1.7;
+$headings-font-family:   $font-title;
+$headings-font-weight:   500;
+$headings-color:         $blush-veil;
+$h2-font-size:           2.5rem;
+$h3-font-size:           1.75rem;
+
+$link-color:       $blush-veil;
+$link-hover-color: $porcelain-pink;
+$border-color:     rgba($dusty-mauve, 0.35);
+$border-radius:    $radius-sm;
+
+$btn-transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease,
+box-shadow 0.3s ease, transform 0.3s ease;
+
+$input-bg:                    transparent;
+$input-color:                 $porcelain-pink;
+$input-border-color:          rgba($blush-veil, 0.45);
+$input-focus-bg:              rgba($black-cherry, 0.35);
+$input-focus-color:           $porcelain-pink;
+$input-focus-border-color:    $cranberry-silk;
+$input-placeholder-color:     $mauve-text;
+$input-btn-focus-color:       rgba($cranberry-silk, 0.5);
+$input-btn-focus-width:       0.25rem;
+$form-label-color:            $mauve-text;
+$form-check-input-bg:         transparent;
+$form-check-input-border:     1px solid rgba($blush-veil, 0.6);
+$form-select-indicator-color: $blush-veil;
+
+$table-color:             $blush-veil;
+$table-bg:                transparent;
+$table-border-color:      rgba($dusty-mauve, 0.3);
+$table-striped-bg-factor: 0.07;
+$table-hover-bg-factor:   0.12;
+
+// ======================= 3. BOOTSTRAP =======================
+@import 'bootstrap/scss/bootstrap';
+
+// ======================= 4. MIXINS =======================
+@function str-replace($string, $search, $replace) {
+  $i: str-index($string, $search);
+  @if $i {
+    @return str-slice($string, 1, $i - 1) + $replace +
+      str-replace(str-slice($string, $i + str-length($search)), $search, $replace);
+  }
+  @return $string;
+}
+// SVG inline -> data-URI utilisable en background
+@function svg-uri($svg) {
+  $e: str-replace($svg, '<', '%3C');
+  $e: str-replace($e, '>', '%3E');
+  $e: str-replace($e, '#', '%23');
+  @return url('data:image/svg+xml,#{$e}');
+}
+
+// Petite fleur burgundy (coin du formulaire, fleur fanée de la 404)
+$flower-svg: svg-uri(
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>" +
+  "<g fill='#8E2D3B' stroke='#6B1D2A' stroke-width='1.4' stroke-linejoin='round'>" +
+  "<path d='M50 50C34 38 35 12 50 4C65 12 66 38 50 50Z'/>" +
+  "<path d='M50 50C34 38 35 12 50 4C65 12 66 38 50 50Z' transform='rotate(72 50 50)'/>" +
+  "<path d='M50 50C34 38 35 12 50 4C65 12 66 38 50 50Z' transform='rotate(144 50 50)'/>" +
+  "<path d='M50 50C34 38 35 12 50 4C65 12 66 38 50 50Z' transform='rotate(216 50 50)'/>" +
+  "<path d='M50 50C34 38 35 12 50 4C65 12 66 38 50 50Z' transform='rotate(288 50 50)'/>" +
+  "</g><g fill='#6B1D2A' stroke='#8E2D3B' stroke-width='1'>" +
+  "<path d='M50 50C42 43 43 29 50 24C57 29 58 43 50 50Z' transform='rotate(36 50 50)'/>" +
+  "<path d='M50 50C42 43 43 29 50 24C57 29 58 43 50 50Z' transform='rotate(108 50 50)'/>" +
+  "<path d='M50 50C42 43 43 29 50 24C57 29 58 43 50 50Z' transform='rotate(180 50 50)'/>" +
+  "<path d='M50 50C42 43 43 29 50 24C57 29 58 43 50 50Z' transform='rotate(252 50 50)'/>" +
+  "<path d='M50 50C42 43 43 29 50 24C57 29 58 43 50 50Z' transform='rotate(324 50 50)'/>" +
+  "</g><circle cx='50' cy='50' r='5' fill='#C39583'/></svg>"
+);
+
+// Pétales isolés (pluie de la 404) : un pétale par tuile, tuiles de tailles différentes
+$petal-a: svg-uri("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 360'><path transform='translate(70 90) rotate(25)' d='M0 26C-14 14-14-8 0-22C14-8 14 14 0 26Z' fill='#8E2D3B'/></svg>");
+$petal-b: svg-uri("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 440 560'><path transform='translate(300 200) rotate(-35) scale(1.4)' d='M0 26C-14 14-14-8 0-22C14-8 14 14 0 26Z' fill='#6B1D2A' stroke='#8E2D3B'/></svg>");
+$petal-c: svg-uri("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 460'><path transform='translate(180 300) rotate(70) scale(0.8)' d='M0 26C-14 14-14-8 0-22C14-8 14 14 0 26Z' fill='#A33A4B'/></svg>");
+
+@mixin font-title  { font-family: $font-title;  font-weight: 500; letter-spacing: 0.01em; }
+@mixin font-body   { font-family: $font-body;   font-weight: 300; }
+@mixin font-script { font-family: $font-script; font-weight: 400; line-height: 1.25; letter-spacing: 0.01em; }
+
+@mixin focus-ring($color: $blush-veil) { outline: 2px solid $color; outline-offset: 3px; }
+@mixin reduced-motion { @media (prefers-reduced-motion: reduce) { @content; } }
+
+@mixin glass($alpha: 0.6) {
+  background: rgba($black-cherry, $alpha);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba($dusty-mauve, 0.55);
+  border-radius: $radius-md;
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.35);
+}
+
+// Fond de page : voile bordeaux dégradé + photo. $pos / $size = variation par page.
+@mixin page-bg($pos: center, $size: cover, $veil: 0.85) {
+  background-color: $black-cherry;
+  background-image: linear-gradient(rgba(58, 14, 30, $veil), rgba(68, 16, 21, $veil + 0.1)), $bg-flowers;
+  background-position: 0 0, $pos;
+  background-size: 100% 100%, $size;
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: scroll, scroll;                      // mobile : performance
+  @include media-breakpoint-up(lg) { background-attachment: fixed, fixed; }
+}
+
+// Cadre photo : bordure dorée en dégradé, passe-partout rose pâle, double liseré, relief
+@mixin photo-frame {
+  --bs-border-radius: 2px;                                    // .rounded : coins presque droits
+  box-sizing: border-box;
+  padding: 0.9rem;                                            // passe-partout
+  background-color: $porcelain-pink;
+  border: 0.85rem solid transparent;
+  border-image: linear-gradient(135deg, $antique-gold 0%, $rose-clay 45%, $antique-gold 100%) 1;
+  outline: 1px solid rgba($porcelain-pink, 0.55);             // liseré intérieur
+  outline-offset: -0.3rem;
+  box-shadow:
+    0 1.75rem 3.5rem rgba(0, 0, 0, 0.6),                      // extérieur
+    0 0.25rem 0.6rem rgba(0, 0, 0, 0.4),
+    inset 0 0.2rem 0.7rem rgba($black-cherry, 0.45);          // intérieur (relief du passe-partout)
+}
+
+// ======================= 5. BASE =======================
+body { @include font-body; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+html { scroll-behavior: smooth; @include reduced-motion { scroll-behavior: auto; } }
+a { transition: color $transition; text-underline-offset: 0.25em; }
+a:focus-visible { @include focus-ring; border-radius: 2px; }
+::selection { background: $cranberry-silk; color: $porcelain-pink; }
+
+// Utilitaires typographiques (3 usages)
+.font-title  { @include font-title; }
+.font-body   { @include font-body; }
+.font-script { @include font-script; }
+
+// ======================= 6. MISE EN PAGE & FONDS =======================
+// <html> dans app.html : si tu le gardes, il est aussi pris en charge.
+app-root, app-root > html { display: flex; flex-direction: column; min-height: 100vh; }
+app-root > html { flex: 1 0 auto; }
+app-header { display: block; position: sticky; top: 0; z-index: 1030; }
+app-footer { display: block; }
+
+// Page affichée par le router-outlet : remplit l'espace entre header et footer
+router-outlet + * { display: block; flex: 1 0 auto; padding-block: 2rem 4rem; overflow-x: clip; }
+
+//                          position      zoom   voile
+app-accueil,   .bg-accueil { @include page-bg(center 30%, cover, 0.80); }
+app-liste,     .bg-liste   { @include page-bg(85% 20%,    130%,  0.86); }
+app-gestion,   .bg-gestion { @include page-bg(50% 100%,   160%,  0.92); }  // voile dense : lisibilité
+app-contact,   .bg-contact { @include page-bg(10% 65%,    145%,  0.84); }
+app-erreur-404, app-erreur404, .bg-erreur { @include page-bg(50% 50%, 190%, 0.90); }
+
+// Titres de page
+app-liste h2, app-gestion h2, app-contact h2 { color: $porcelain-pink; font-weight: 400; }
+
+// ======================= 7. COMPOSANTS PARTAGÉS =======================
+// --- Boutons (.btn-primary = bouton « fleur ») ---
+.btn { letter-spacing: 0.08em; font-size: 0.95rem; }
+.btn:focus-visible { @include focus-ring; box-shadow: none; }
+.btn-primary {
+  --bs-btn-padding-x: 1.75rem; --bs-btn-padding-y: 0.7rem;
+  --bs-btn-color: #{$porcelain-pink};          --bs-btn-bg: #{$cranberry-silk};
+  --bs-btn-border-color: #{$cranberry-silk};
+  --bs-btn-hover-color: #{$porcelain-pink};    --bs-btn-hover-bg: #{$cranberry-hover};
+  --bs-btn-hover-border-color: #{$cranberry-hover};
+  --bs-btn-active-color: #{$porcelain-pink};   --bs-btn-active-bg: #7A2532;
+  --bs-btn-active-border-color: #7A2532;
+  --bs-btn-disabled-color: #{$porcelain-pink}; --bs-btn-disabled-bg: #{$cranberry-silk};
+  --bs-btn-disabled-border-color: #{$cranberry-silk};
+  --bs-btn-disabled-opacity: 0.5;
+  &:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 0.5rem 1.25rem rgba($cranberry-silk, 0.4); }
+}
+// Supprimer : visible mais discret (rouge profond)
+.btn-danger {
+  --bs-btn-color: #{$danger-text};        --bs-btn-bg: transparent;
+  --bs-btn-border-color: #{$danger-wine};
+  --bs-btn-hover-color: #{$porcelain-pink}; --bs-btn-hover-bg: #{$danger-wine};
+  --bs-btn-hover-border-color: #{$danger-wine};
+  --bs-btn-active-bg: #8A2733;            --bs-btn-active-border-color: #8A2733;
+}
+
+// --- Champs : bordure basse fine, focus cranberry + léger glow ---
+.form-label { font-size: 0.85rem; letter-spacing: 0.06em; margin-bottom: 0.15rem; transition: color $transition; }
+.mb-3:focus-within > .form-label { color: $blush-veil; }
+.form-control, .form-select {
+  border-width: 0 0 1px; border-radius: 0; padding-left: 0; padding-right: 0;
+  transition: border-color $transition, box-shadow $transition, background-color $transition;
+  &:hover { border-bottom-color: $blush-veil; }
+  &:focus { border-bottom-color: $cranberry-silk; box-shadow: 0 0.6rem 1rem -0.6rem rgba($cranberry-silk, 0.9); }
+  &:focus-visible { outline: 1px solid rgba($blush-veil, 0.6); outline-offset: 4px; }
+  &:-webkit-autofill { -webkit-text-fill-color: $porcelain-pink; box-shadow: 0 0 0 100px $black-cherry inset; caret-color: $porcelain-pink; }
+  &.ng-invalid.ng-touched { border-bottom-color: $danger-text; }      // validation Angular
+  option { background: $deep-wine; color: $porcelain-pink; }
+}
+textarea.form-control { min-height: 6rem; resize: vertical; }
+.form-check-input { transition: background-color $transition, border-color $transition; }
+.form-check-input:focus-visible { @include focus-ring; }
+.form-check-label { color: $blush-veil; cursor: pointer; }
+
+// Message d'erreur (optionnel) : <p class="form-error">…</p>
+.form-error {
+  display: flex; gap: 0.4rem; margin: 0.4rem 0 0; font-size: 0.85rem; line-height: 1.4; color: $danger-text;
+  animation: fade-in 0.3s ease both;
+  &::before { content: ''; flex: none; width: 0.4rem; height: 0.4rem; margin-top: 0.45rem;
+    border-radius: 50% 0 50% 0; background: $danger-text; }
+}
+
+// --- Alertes en verre dépoli ---
+.alert, .alert-danger, .alert-warning {
+  --bs-alert-bg: #{rgba($deep-wine, 0.78)};
+  --bs-alert-color: #{$blush-veil};
+  --bs-alert-border-color: #{rgba($dusty-mauve, 0.5)};
+  --bs-alert-border-radius: #{$radius-md};
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.alert-danger { --bs-alert-border-color: #{rgba($danger-wine, 0.9)}; }
+.alert .text-danger { --bs-danger-rgb: #{$blush-rgb}; }     // titres rouges -> rose pâle
+
+// --- Tableaux Bootstrap (si utilisés dans Gestion) ---
+.table thead th { @include font-title; font-weight: 500; color: $porcelain-pink; border-bottom: 1px solid rgba($rose-clay, 0.6); }
+.table tbody tr { transition: background-color $transition; }
+
+// --- Séparateurs <hr> : filet sage qui s'estompe ---
+hr { height: 1px; border: 0; opacity: 1; margin: 2rem auto; max-width: 12rem;
+  background: linear-gradient(90deg, transparent, $sage, transparent); }
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes poster-in { from { opacity: 0; transform: scale(0.96) translateY(0.5rem); } }
+@keyframes hero-in { from { opacity: 0; transform: translateY(1rem); } }
+
+// ======================= 8. HEADER =======================
+app-header .navbar {
+  --bs-bg-opacity: 0.9;                              // pilote .bg-light (devenu bordeaux profond)
+  --bs-navbar-color: #{$blush-veil};
+  --bs-navbar-hover-color: #{$porcelain-pink};
+  --bs-navbar-active-color: #{$porcelain-pink};
+  min-height: $header-h;
+  border-bottom: 1px solid rgba($sage, 0.5);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+
+  > .container-fluid { justify-content: center; }
+  // Liens toujours en ligne : 3 liens tiennent sur mobile, pas besoin de burger
+  .navbar-nav { flex-direction: row; gap: clamp(1.25rem, 6vw, 3rem); }
+  .nav-link {
+    position: relative; padding: 0.5rem 0; font-size: 0.95rem; letter-spacing: 0.06em;
+    &::after {                                       // soulignement animé
+      content: ''; position: absolute; left: 0; right: 0; bottom: 0.15rem; height: 1px;
+      background: $rose-clay; transform: scaleX(0); transform-origin: left; transition: transform $transition;
+    }
+    &:hover::after, &:focus-visible::after, &.active::after { transform: scaleX(1); }
+    &:focus-visible { @include focus-ring; }
+  }
+}
+
+// ======================= 9. FOOTER =======================
+app-footer footer {
+  --bs-border-color: #{rgba($sage, 0.6)};           // .border-top
+  font-size: 0.875rem;
+  a {
+    --bs-dark-rgb: #{$mauve-rgb};                    // .text-dark -> mauve lisible
+    letter-spacing: 0.06em; transition: color $transition;
+    svg { transition: transform $transition; }
+    &:hover, &:focus-visible { --bs-dark-rgb: #{$porcelain-rgb}; }
+    &:hover svg { transform: translateY(-2px); }
+  }
+}
+
+// ======================= 10. ACCUEIL =======================
+// Ton image : posée dans un cadre photo
+app-accueil img {
+  @include photo-frame;
+  display: block; width: auto; max-width: min(100%, 34rem); height: auto; margin-top: 2rem;
+  animation: hero-in 1.1s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+// Hero optionnel (si tu ajoutes titre / sous-titre / bouton)
+.hero { text-align: center; max-width: 44rem; margin: 3rem auto;
+  &__title { font-size: clamp(2.75rem, 8vw, 5.5rem); font-weight: 400; line-height: 1.05; color: $porcelain-pink; text-shadow: 0 0.2rem 2rem rgba(0, 0, 0, 0.5); }
+  &__subtitle { font-size: clamp(1rem, 2.2vw, 1.25rem); letter-spacing: 0.04em; line-height: 1.8; margin: 1.5rem auto 2.5rem; max-width: 34rem; }
+}
+
+// ======================= 11. LISTE =======================
+app-liste {
+  .list-group {
+    --bs-list-group-bg: transparent;
+    --bs-list-group-color: #{$blush-veil};
+    --bs-list-group-border-color: #{rgba($sage, 0.4)};
+    min-width: min(100%, 18rem);
+  }
+  .list-group-item {
+    padding: 0.4rem 1.5rem; cursor: pointer;
+    transition: background-color $transition;
+    &:hover { background-color: rgba($cranberry-silk, 0.18); }
+
+    // Titre du film : calligraphie, cliquable
+    a {
+      @include font-script;
+      display: inline-block; cursor: pointer;
+      font-size: clamp(2rem, 5.5vw, 2.75rem); color: $blush-veil;
+      transition: color $transition, text-shadow $transition, transform $transition;
+    }
+    &:hover a, a:focus-visible, a.is-active {
+      color: $porcelain-pink; transform: translateX(0.35rem);
+      text-shadow: 0 0 0.35rem rgba($cranberry-silk, 0.9), 0 0 1.4rem rgba($cranberry-silk, 0.8);   // halo
+    }
+    a:focus-visible { @include focus-ring; }
+  }
+
+  // Bloc affiche (.bg-light / .border / .shadow-sm neutralisés via leurs variables)
+  .detail-film {
+    --bs-bg-opacity: 0; --bs-border-width: 0; --bs-box-shadow-sm: none;
+    animation: poster-in 0.7s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+    h3 { @include font-script; font-size: clamp(2.2rem, 6vw, 3rem); color: $porcelain-pink; margin: 0 0 0.75rem; }
+    img {
+      @include photo-frame;
+      display: block; margin-inline: auto;
+      width: min(100%, 22rem); aspect-ratio: 2 / 3; object-fit: cover;     // affiche 2:3
+    }
+  }
+}
+
+// ======================= 12. GESTION =======================
+app-gestion .card {
+  --bs-card-bg: #{rgba($black-cherry, 0.62)};
+  --bs-card-color: #{$blush-veil};
+  --bs-card-border-color: #{rgba($dusty-mauve, 0.55)};
+  --bs-card-border-radius: #{$radius-md};
+  --bs-box-shadow-sm: 0 1rem 2.5rem rgba(0, 0, 0, 0.35);              // .shadow-sm
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+
+  p { margin: 0; padding-block: 0.7rem; }
+  p + p { border-top: 1px solid rgba($sage, 0.35); }
+  strong { color: $mauve-text; font-weight: 400; font-size: 0.85rem; letter-spacing: 0.06em; margin-right: 0.4rem; }
+  em { color: $mauve-text; }
+}
+
+// ======================= 13. CONTACT =======================
+app-contact {
+  .row { --bs-gutter-x: 0; }
+
+  // La « div du formulaire » = .col-md-6 : verre dépoli + fleur d'angle
+  .col-md-6 {
+    @include glass(0.62);
+    position: relative; flex: 0 0 auto; width: min(100%, 36rem);
+    padding: clamp(1.75rem, 5vw, 3rem);
+
+    // Fleur burgundy en haut à droite (SVG en background, légèrement débordante)
+    &::after {
+      content: ''; position: absolute; top: -1.9rem; right: -1.4rem; width: 5.5rem; height: 5.5rem;
+      background: $flower-svg center / contain no-repeat; pointer-events: none;
+      transform: rotate(14deg); filter: drop-shadow(0 0.4rem 0.6rem rgba(0, 0, 0, 0.5));
+      @include media-breakpoint-down(sm) { width: 4rem; height: 4rem; top: -1.4rem; right: -0.5rem; }
+    }
+    > h2, > form { transition: opacity 0.5s ease, visibility 0.5s ease; }
+  }
+
+  // Calque « fleur + remerciement » (présent seulement si tu ajoutes le bloc HTML)
+  .bloom-result {
+    position: absolute; inset: 0; padding: 2rem;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.25rem;
+    text-align: center; opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.4s ease 0.3s, visibility 0s linear 0.3s;
+  }
+  .bloom-thanks { opacity: 0; max-width: 24rem;
+    h3 { color: $porcelain-pink; margin-bottom: 0.5rem; }
+    p { margin: 0; }
+  }
+
+  // Envoi : le formulaire s'estompe, la fleur s'épanouit (~1,8 s), le merci apparaît en fondu
+  .col-md-6.is-sending {
+    > h2, > form { opacity: 0; visibility: hidden; pointer-events: none; }
+    .bloom-result { opacity: 1; visibility: visible; }
+    .bloom-thanks { animation: fade-in 0.9s ease 1.7s both; }
+    .bloom__petal { animation: petal-open 0.9s cubic-bezier(0.34, 1.3, 0.5, 1) calc(0.3s + var(--n) * 0.12s) both; }
+    .bloom__petal--inner { animation-delay: calc(0.9s + var(--n) * 0.1s); }
+    .bloom__heart { animation: heart-in 0.6s ease 1.4s both; }
+  }
+}
+
+.bloom {
+  width: clamp(7rem, 30vw, 9.5rem); height: auto; overflow: visible;
+  filter: drop-shadow(0 0.5rem 1rem rgba(0, 0, 0, 0.5));
+  &__petal {
+    fill: $cranberry-silk; stroke: $burgundy-dark; stroke-width: 1.5; stroke-linejoin: round;
+    transform-box: view-box; transform-origin: 50% 50%;       // centre de la fleur
+    transform: rotate(var(--a, 0deg));
+    &--inner { fill: $burgundy-dark; stroke: $cranberry-silk; }
+  }
+  &__heart { fill: $rose-clay; transform-box: fill-box; transform-origin: center; }
+}
+@keyframes petal-open {            // bourgeon fermé (scale 0 + rotation) -> pétale ouvert
+  from { opacity: 0; transform: rotate(calc(var(--a, 0deg) - 80deg)) scale(0); }
+  35%  { opacity: 1; }
+  to   { opacity: 1; transform: rotate(var(--a, 0deg)) scale(1); }
+}
+@keyframes heart-in { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+
+// ======================= 14. ERREUR 404 =======================
+app-erreur-404, app-erreur404 {
+  position: relative; overflow: hidden; isolation: isolate; text-align: center;
+
+  // Fleur fanée : même fleur, désaturée, penchée, en filigrane
+  &::before {
+    content: ''; position: absolute; z-index: -1; left: 50%; top: 50%;
+    width: min(80vw, 30rem); aspect-ratio: 1;
+    background: $flower-svg center / contain no-repeat;
+    transform: translate(-50%, -50%) rotate(24deg);
+    filter: grayscale(0.7) brightness(0.8); opacity: 0.16;
+  }
+  // Pétales qui tombent : 3 couches de tuiles, décalées, en chute lente
+  &::after {
+    content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0.75;
+    background-image: $petal-a, $petal-b, $petal-c;
+    background-size: 280px 360px, 440px 560px, 360px 460px;
+    background-repeat: repeat, repeat, repeat;
+    animation: petals-fall 30s linear infinite;
+    @include reduced-motion { animation: none; opacity: 0.35; }
+  }
+
+  .container { position: relative; }
+  .display-3 { font-size: clamp(6rem, 26vw, 12rem); line-height: 0.95; text-shadow: 0 0.3rem 3rem rgba(0, 0, 0, 0.6); }
+  .text-danger { --bs-danger-rgb: #{$blush-rgb}; }
+  h2 { @include font-script; font-size: clamp(2rem, 6vw, 3rem); color: $porcelain-pink; }
+}
+@keyframes petals-fall {
+  from { background-position: 0 0, 150px 0, 60px 0; }
+  to   { background-position: 280px 720px, -290px 560px, -300px 920px; }   // multiples de la taille des tuiles : boucle sans saut
+}
+
+// ======================= MOUVEMENT RÉDUIT =======================
+@include reduced-motion {
+  .detail-film, app-accueil img { animation: fade-in 0.4s ease both; }
+  app-contact .col-md-6.is-sending {
+    .bloom__petal, .bloom__heart { animation: fade-in 0.4s ease both; animation-delay: 0s; }
+    .bloom-thanks { animation: fade-in 0.4s ease 0.4s both; }
+  }
+}
+

@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class Gestion {
   dernierContact: any = null;
 
-  // On récupère les données du service dès que le composant s'affiche
+
   constructor(private contactService: ContactService, private router:Router) {
     this.dernierContact = this.contactService.dernierContact;
     if (!this.dernierContact) {

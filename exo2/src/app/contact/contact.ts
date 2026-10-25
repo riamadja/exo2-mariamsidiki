@@ -33,7 +33,7 @@ export class Contact {
       emailControl?.clearValidators();
       emailControl?.setValue('');
     } else {
-      // remet les validateurs si on redécoche
+
       emailControl?.setValidators([Validators.required, Validators.email]);
     }
 
