@@ -1,7 +1,24 @@
-<ul class="list-group list-group-flush">
-  <li class="list-group-item">Sense and Sensibility</li>
-  <li class="list-group-item">Pride and Prejudice</li>
-  <li class="list-group-item">Persuasion </li>
-  <li class="list-group-item">Charlie et la chocolaterie</li>
-  <li class="list-group-item">Titanic</li>
-</ul>
+<div class="container text-center my-4">
+
+
+  <h2>Liste de mes films favoris</h2>
+
+
+  <ul class="list-group list-group-flush d-inline-block text-start mb-4">
+    @for (film of films; track film.titre) {
+      <li class="list-group-item" style="cursor: pointer;" (click)="selectionnerFilm(film)">
+        <a class="text-decoration-none">{{ film.titre }}</a>
+      </li>
+    }
+  </ul>
+
+  <hr>
+
+  @if (filmSelectionne) {
+    <div class="detail-film mt-4 p-3 border rounded shadow-sm d-inline-block bg-light">
+      <h3>{{ filmSelectionne.titre }}</h3>
+      <img [src]="filmSelectionne.affiche" [alt]="filmSelectionne.titre" style="max-width: 300px; height: auto;" class="rounded mt-2">
+    </div>
+  }
+
+</div>
